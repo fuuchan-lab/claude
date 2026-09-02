@@ -98,6 +98,7 @@ const fxHeadlineEl = document.getElementById("fxHeadline");
 const fxUpdatedEl = document.getElementById("fxUpdated");
 const fxCalcChfEl = document.getElementById("fxCalcChf");
 const fxCalcJpyEl = document.getElementById("fxCalcJpy");
+const fxOandaLinkEl = document.getElementById("fxOandaLink");
 
 let currentChfToJpyRate = null;
 
@@ -129,9 +130,10 @@ function recalcFromChf() {
   const chf = parseFloat(fxCalcChfEl.value);
   if (Number.isNaN(chf)) {
     fxCalcJpyEl.value = "";
-    return;
+  } else {
+    fxCalcJpyEl.value = roundForDisplay(chf * currentChfToJpyRate);
   }
-  fxCalcJpyEl.value = roundForDisplay(chf * currentChfToJpyRate);
+  updateOandaLink();
 }
 
 function recalcFromJpy() {
@@ -139,13 +141,20 @@ function recalcFromJpy() {
   const jpy = parseFloat(fxCalcJpyEl.value);
   if (Number.isNaN(jpy)) {
     fxCalcChfEl.value = "";
-    return;
+  } else {
+    fxCalcChfEl.value = roundForDisplay(jpy / currentChfToJpyRate);
   }
-  fxCalcChfEl.value = roundForDisplay(jpy / currentChfToJpyRate);
+  updateOandaLink();
 }
 
 function roundForDisplay(value) {
   return Math.round(value * 100) / 100;
+}
+
+function updateOandaLink() {
+  const jpy = parseFloat(fxCalcJpyEl.value);
+  const amount = Number.isNaN(jpy) ? 1 : jpy;
+  fxOandaLinkEl.href = `https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=${amount}`;
 }
 
 fxCalcChfEl.addEventListener("input", recalcFromChf);
