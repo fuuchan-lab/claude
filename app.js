@@ -1,3 +1,9 @@
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch((err) => console.error("SW registration failed", err));
+  });
+}
+
 const ZURICH_TZ = "Europe/Zurich";
 
 const digitalTimeEl = document.getElementById("digitalTime");
