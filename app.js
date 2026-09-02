@@ -93,36 +93,63 @@ function tick() {
 }
 requestAnimationFrame(tick);
 
-// --- CHF exchange rates ---
-const fxTableBody = document.getElementById("fxTableBody");
+// --- CHF -> JPY exchange rate + calculator ---
+const fxHeadlineEl = document.getElementById("fxHeadline");
 const fxUpdatedEl = document.getElementById("fxUpdated");
+const fxCalcChfEl = document.getElementById("fxCalcChf");
+const fxCalcJpyEl = document.getElementById("fxCalcJpy");
 
-const FX_TARGETS = ["USD", "EUR", "JPY", "GBP"];
-const FX_LABELS = { USD: "米ドル (USD)", EUR: "ユーロ (EUR)", JPY: "日本円 (JPY)", GBP: "英ポンド (GBP)" };
+let currentChfToJpyRate = null;
 
 async function fetchFxRates() {
   try {
-    const url = `https://api.frankfurter.app/latest?from=CHF&to=${FX_TARGETS.join(",")}`;
+    const url = "https://api.frankfurter.app/latest?from=CHF&to=JPY";
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     renderFxRates(data);
   } catch (err) {
-    fxTableBody.innerHTML = `<tr><td colspan="2">為替レートの取得に失敗しました。しばらくして再試行します。</td></tr>`;
+    fxHeadlineEl.textContent = "レート取得に失敗しました";
     console.error("FX fetch failed", err);
   }
 }
 
 function renderFxRates(data) {
-  const rows = FX_TARGETS.map((code) => {
-    const rate = data.rates[code];
-    const value = typeof rate === "number" ? rate.toFixed(code === "JPY" ? 2 : 4) : "—";
-    return `<tr><td>${FX_LABELS[code]}</td><td>${value}</td></tr>`;
-  }).join("");
-  fxTableBody.innerHTML = rows;
+  const rate = data.rates.JPY;
+  if (typeof rate !== "number") return;
+  currentChfToJpyRate = rate;
+  fxHeadlineEl.textContent = `1 CHF = ${rate.toFixed(2)} 円`;
   const now = new Date();
   fxUpdatedEl.textContent = `最終更新: ${now.toLocaleTimeString("ja-JP")} (レート基準日: ${data.date})`;
+  recalcFromChf();
 }
+
+function recalcFromChf() {
+  if (currentChfToJpyRate === null) return;
+  const chf = parseFloat(fxCalcChfEl.value);
+  if (Number.isNaN(chf)) {
+    fxCalcJpyEl.value = "";
+    return;
+  }
+  fxCalcJpyEl.value = roundForDisplay(chf * currentChfToJpyRate);
+}
+
+function recalcFromJpy() {
+  if (currentChfToJpyRate === null) return;
+  const jpy = parseFloat(fxCalcJpyEl.value);
+  if (Number.isNaN(jpy)) {
+    fxCalcChfEl.value = "";
+    return;
+  }
+  fxCalcChfEl.value = roundForDisplay(jpy / currentChfToJpyRate);
+}
+
+function roundForDisplay(value) {
+  return Math.round(value * 100) / 100;
+}
+
+fxCalcChfEl.addEventListener("input", recalcFromChf);
+fxCalcJpyEl.addEventListener("input", recalcFromJpy);
 
 fetchFxRates();
 setInterval(fetchFxRates, 60_000);

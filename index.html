@@ -40,15 +40,30 @@
 
     <section class="panel panel--fx">
       <h2>スイスフラン (CHF) 為替レート</h2>
-      <table class="fx-table" id="fxTable">
-        <thead>
-          <tr><th>通貨</th><th>1 CHF あたり</th></tr>
-        </thead>
-        <tbody id="fxTableBody">
-          <tr><td colspan="2">読み込み中...</td></tr>
-        </tbody>
-      </table>
+      <div class="fx-headline" id="fxHeadline">1 CHF = ---- 円</div>
       <p class="fx-updated" id="fxUpdated">最終更新: --</p>
+
+      <div class="fx-calc">
+        <div class="fx-calc__field">
+          <label for="fxCalcChf">スイスフラン</label>
+          <div class="fx-calc__input-wrap">
+            <input type="number" id="fxCalcChf" inputmode="decimal" placeholder="0" value="1">
+            <span class="fx-calc__unit">CHF</span>
+          </div>
+        </div>
+        <div class="fx-calc__eq">=</div>
+        <div class="fx-calc__field">
+          <label for="fxCalcJpy">日本円</label>
+          <div class="fx-calc__input-wrap">
+            <input type="number" id="fxCalcJpy" inputmode="decimal" placeholder="0">
+            <span class="fx-calc__unit">円</span>
+          </div>
+        </div>
+        <a class="fx-oanda-link" href="https://www.oanda.com/currency-converter/en/?from=CHF&to=JPY&amount=1" target="_blank" rel="noopener" title="OANDAの為替換算ページを開く">
+          OANDAで見る ↗
+        </a>
+      </div>
+
       <p class="fx-note">出典: Frankfurter API (欧州中央銀行 参考レート)。60秒ごとに自動更新します。</p>
     </section>
 
