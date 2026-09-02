@@ -328,6 +328,13 @@ body::before {
   margin-top: 1px;
 }
 
+.weather-moon {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
 .weather-forecast {
   display: flex;
   gap: 6px;

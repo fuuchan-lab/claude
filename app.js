@@ -209,6 +209,7 @@ const weatherIconEl = document.getElementById("weatherIcon");
 const weatherTempEl = document.getElementById("weatherTemp");
 const weatherDescEl = document.getElementById("weatherDesc");
 const weatherPressureEl = document.getElementById("weatherPressure");
+const weatherMoonEl = document.getElementById("weatherMoon");
 const weatherForecastEl = document.getElementById("weatherForecast");
 const weatherUpdatedEl = document.getElementById("weatherUpdated");
 const sunTimesEl = document.getElementById("sunTimes");
@@ -229,12 +230,43 @@ async function fetchWeather() {
   }
 }
 
+// Moon phase via a simple synodic-month approximation (no API needed).
+const SYNODIC_MONTH_DAYS = 29.53058867;
+const KNOWN_NEW_MOON_MS = Date.UTC(2000, 0, 6, 18, 14); // a reference new moon
+
+const MOON_PHASES = [
+  { max: 0.03, emoji: "🌑", label: "新月" },
+  { max: 0.22, emoji: "🌒", label: "三日月" },
+  { max: 0.28, emoji: "🌓", label: "上弦の月" },
+  { max: 0.47, emoji: "🌔", label: "十三夜" },
+  { max: 0.53, emoji: "🌕", label: "満月" },
+  { max: 0.72, emoji: "🌖", label: "十六夜" },
+  { max: 0.78, emoji: "🌗", label: "下弦の月" },
+  { max: 0.97, emoji: "🌘", label: "二十六夜" },
+  { max: 1.01, emoji: "🌑", label: "新月" },
+];
+
+function getMoonPhase(date) {
+  const daysSinceNew = (date.getTime() - KNOWN_NEW_MOON_MS) / 86400000;
+  const age = daysSinceNew % SYNODIC_MONTH_DAYS;
+  const normalizedAge = age < 0 ? age + SYNODIC_MONTH_DAYS : age;
+  const fraction = normalizedAge / SYNODIC_MONTH_DAYS;
+  const phase = MOON_PHASES.find((p) => fraction <= p.max) || MOON_PHASES[0];
+  return { ...phase, age: normalizedAge };
+}
+
+function updateMoonPhase() {
+  const { emoji, label, age } = getMoonPhase(new Date());
+  weatherMoonEl.textContent = `${emoji} 月齢 ${age.toFixed(1)} (${label})`;
+}
+
 function renderWeather(data) {
   const current = describeWeatherCode(data.current.weather_code);
   weatherIconEl.textContent = current.icon;
   weatherTempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
   weatherDescEl.textContent = current.label;
   weatherPressureEl.textContent = `気圧: ${Math.round(data.current.pressure_msl)} hPa`;
+  updateMoonPhase();
 
   const sunrise = data.daily.sunrise[0].split("T")[1];
   const sunset = data.daily.sunset[0].split("T")[1];
