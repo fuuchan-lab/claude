@@ -325,7 +325,7 @@ function formatCountdown(minutes) {
   return `${h}時間${m}分後`;
 }
 
-const BUS_DISPLAY_COUNT = 3;
+const BUS_DISPLAY_COUNT = 4;
 
 async function fetchBusDepartures() {
   try {
