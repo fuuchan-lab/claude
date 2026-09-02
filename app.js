@@ -373,3 +373,21 @@ function renderBusDepartures(entries) {
 
 fetchBusDepartures();
 setInterval(fetchBusDepartures, 30_000);
+
+// --- Nearby live webcam (Balzers, MeteoNews) ---
+const WEBCAM_IMAGE_URL = "https://webcams.meteonews.net/webcams/orig/10116.jpg";
+const webcamImgEl = document.getElementById("webcamImg");
+const webcamFrameEl = document.querySelector(".webcam-frame");
+const webcamFallbackEl = document.getElementById("webcamFallback");
+
+function refreshWebcamImage() {
+  webcamImgEl.src = `${WEBCAM_IMAGE_URL}?t=${Date.now()}`;
+}
+
+webcamImgEl.addEventListener("error", () => {
+  webcamFrameEl.hidden = true;
+  webcamFallbackEl.hidden = false;
+}, { once: true });
+
+refreshWebcamImage();
+setInterval(refreshWebcamImage, 60_000);
