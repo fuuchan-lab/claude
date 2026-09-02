@@ -602,7 +602,7 @@ function renderBusDepartures(entries) {
       const departureIso = entry.stop && entry.stop.departure;
       const departureDate = departureIso ? new Date(departureIso) : null;
       const timeStr = departureDate
-        ? departureDate.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })
+        ? departureDate.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit", timeZone: ZURICH_TZ })
         : "--:--";
       const minutesUntil = departureDate ? Math.round((departureDate.getTime() - now) / 60000) : null;
       const countdown = minutesUntil !== null ? formatCountdown(minutesUntil) : "";
