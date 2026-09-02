@@ -257,7 +257,7 @@ function getMoonPhase(date) {
 
 function updateMoonPhase() {
   const { emoji, label, age } = getMoonPhase(new Date());
-  weatherMoonEl.textContent = `${emoji} 月齢 ${age.toFixed(1)} (${label})`;
+  weatherMoonEl.innerHTML = `<span class="moon-emoji">${emoji}</span> 月齢 ${age.toFixed(1)} (${label})`;
 }
 
 function renderWeather(data) {

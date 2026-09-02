@@ -337,6 +337,12 @@ body::before {
   margin-bottom: 4px;
 }
 
+.moon-emoji {
+  font-size: 1.6rem;
+  vertical-align: middle;
+  line-height: 1;
+}
+
 .weather-forecast {
   display: flex;
   gap: 6px;
