@@ -39,7 +39,10 @@
         </div>
         <div class="clock-combo__digital">
           <div class="digital-time" id="digitalTime">--:--:--</div>
-          <div class="digital-date" id="digitalDate">----年--月--日 (-)</div>
+          <div class="digital-date-line">
+            <span class="digital-date" id="digitalDate">----年--月--日 (-)</span>
+            <span class="holiday-label" id="holidayLabel" hidden></span>
+          </div>
           <div class="sun-times" id="sunTimes">日出 --:-- / 日没 --:--</div>
         </div>
       </div>
@@ -83,6 +86,7 @@
           <div class="weather-temp" id="weatherTemp">--°C</div>
           <div class="weather-desc" id="weatherDesc">読み込み中...</div>
           <div class="weather-pressure" id="weatherPressure">気圧: -- hPa</div>
+          <div class="weather-extra" id="weatherExtra">湿度: --% ・ 風速: -- km/h</div>
         </div>
       </div>
       <div class="weather-moon" id="weatherMoon">🌔 月齢 -- (--)</div>

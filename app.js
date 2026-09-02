@@ -8,6 +8,7 @@ const ZURICH_TZ = "Europe/Zurich";
 
 const digitalTimeEl = document.getElementById("digitalTime");
 const digitalDateEl = document.getElementById("digitalDate");
+const holidayLabelEl = document.getElementById("holidayLabel");
 
 const timeFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: ZURICH_TZ,
@@ -25,6 +26,13 @@ const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
   weekday: "short",
 });
 
+const zurichYmdFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: ZURICH_TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 function getZurichParts(date) {
   const parts = timeFormatter.formatToParts(date);
   const lookup = Object.fromEntries(parts.map((p) => [p.type, p.value]));
@@ -35,11 +43,96 @@ function getZurichParts(date) {
   };
 }
 
+function getZurichYmd(date) {
+  const parts = zurichYmdFormatter.formatToParts(date);
+  const lookup = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return { year: Number(lookup.year), month: lookup.month, day: lookup.day };
+}
+
+// Swiss public holidays: canton St. Gallen's legal holidays (where Trübbach/
+// Evatec AG sit) plus the two holidays observed nationwide across Switzerland
+// (Bundesfeier is the only one set by federal law; Berchtoldstag and Bettag
+// are near-universal cantonal customs coordinated to the same date).
+function computeEasterSunday(year) {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function buildHolidayMap(year) {
+  const map = {};
+  const setKey = (date, name) => {
+    const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(date.getUTCDate()).padStart(2, "0");
+    map[`${mm}-${dd}`] = name;
+  };
+  const setOffset = (base, days, name) => {
+    const d = new Date(base.getTime());
+    d.setUTCDate(d.getUTCDate() + days);
+    setKey(d, name);
+  };
+
+  const easter = computeEasterSunday(year);
+  setKey(new Date(Date.UTC(year, 0, 1)), "元日");
+  setKey(new Date(Date.UTC(year, 0, 2)), "ベルヒトルトの日");
+  setOffset(easter, -2, "聖金曜日");
+  setOffset(easter, 1, "イースターマンデー");
+  setOffset(easter, 39, "キリスト昇天祭");
+  setOffset(easter, 50, "聖霊降臨祭の月曜日");
+  setKey(new Date(Date.UTC(year, 7, 1)), "スイス建国記念日");
+
+  // Bettag: third Sunday of September, coordinated nationwide.
+  const sep1Weekday = new Date(Date.UTC(year, 8, 1)).getUTCDay();
+  const firstSunday = 1 + ((7 - sep1Weekday) % 7);
+  setKey(new Date(Date.UTC(year, 8, firstSunday + 14)), "連邦感謝祈祷の日");
+
+  setKey(new Date(Date.UTC(year, 10, 1)), "諸聖人の日");
+  setKey(new Date(Date.UTC(year, 11, 25)), "クリスマス");
+  setKey(new Date(Date.UTC(year, 11, 26)), "聖ステファノの日");
+  return map;
+}
+
+const holidayMapByYear = {};
+
+function getHolidayName(year, month, day) {
+  if (!holidayMapByYear[year]) holidayMapByYear[year] = buildHolidayMap(year);
+  return holidayMapByYear[year][`${month}-${day}`];
+}
+
 function updateDigitalClock(date) {
   const { hours, minutes, seconds } = getZurichParts(date);
   const pad = (n) => String(n).padStart(2, "0");
   digitalTimeEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   digitalDateEl.textContent = dateFormatter.format(date);
+
+  const { year, month, day } = getZurichYmd(date);
+  const weekday = new Date(Date.UTC(year, Number(month) - 1, Number(day))).getUTCDay();
+  const isWeekend = weekday === 0 || weekday === 6;
+  const holidayName = getHolidayName(year, month, day);
+
+  if (holidayName || isWeekend) {
+    digitalDateEl.classList.add("is-holiday");
+  } else {
+    digitalDateEl.classList.remove("is-holiday");
+  }
+  if (holidayName) {
+    holidayLabelEl.textContent = holidayName;
+    holidayLabelEl.hidden = false;
+  } else {
+    holidayLabelEl.hidden = true;
+  }
 }
 
 // --- SBB railway clock ---
@@ -215,6 +308,7 @@ const weatherIconEl = document.getElementById("weatherIcon");
 const weatherTempEl = document.getElementById("weatherTemp");
 const weatherDescEl = document.getElementById("weatherDesc");
 const weatherPressureEl = document.getElementById("weatherPressure");
+const weatherExtraEl = document.getElementById("weatherExtra");
 const weatherMoonEl = document.getElementById("weatherMoon");
 const weatherForecastEl = document.getElementById("weatherForecast");
 const weatherUpdatedEl = document.getElementById("weatherUpdated");
@@ -224,7 +318,7 @@ async function fetchWeather() {
   try {
     const url =
       `https://api.open-meteo.com/v1/forecast?latitude=${TRUEBBACH_LAT}&longitude=${TRUEBBACH_LON}` +
-      `&current=temperature_2m,weather_code,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset` +
+      `&current=temperature_2m,weather_code,pressure_msl,relative_humidity_2m,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset` +
       `&timezone=Europe%2FZurich&forecast_days=5`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -272,6 +366,7 @@ function renderWeather(data) {
   weatherTempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
   weatherDescEl.textContent = current.label;
   weatherPressureEl.textContent = `気圧: ${Math.round(data.current.pressure_msl)} hPa`;
+  weatherExtraEl.textContent = `湿度: ${Math.round(data.current.relative_humidity_2m)}% ・ 風速: ${data.current.wind_speed_10m.toFixed(1)} km/h`;
   updateMoonPhase();
 
   const sunrise = data.daily.sunrise[0].split("T")[1];

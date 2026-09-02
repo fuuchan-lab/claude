@@ -105,11 +105,25 @@ body::before {
   text-align: center;
 }
 
-.digital-date {
+.digital-date-line {
   text-align: center;
-  color: var(--muted);
-  font-size: 0.78rem;
   margin-top: 1px;
+}
+
+.digital-date {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.digital-date.is-holiday {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.holiday-label {
+  color: var(--accent);
+  font-size: 0.88rem;
+  margin-left: 4px;
 }
 
 .sun-times {
@@ -195,7 +209,7 @@ body::before {
 
 .fx-headline {
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   padding: 0 0 2px;
@@ -312,12 +326,12 @@ body::before {
 }
 
 .weather-temp {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.weather-pressure {
+.weather-pressure, .weather-extra {
   font-size: 0.72rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
