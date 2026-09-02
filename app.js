@@ -9,6 +9,7 @@ const ZURICH_TZ = "Europe/Zurich";
 const digitalTimeEl = document.getElementById("digitalTime");
 const digitalDateEl = document.getElementById("digitalDate");
 const holidayLabelEl = document.getElementById("holidayLabel");
+const statusLightEl = document.getElementById("statusLight");
 
 const timeFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: ZURICH_TZ,
@@ -133,6 +134,27 @@ function updateDigitalClock(date) {
   } else {
     holidayLabelEl.hidden = true;
   }
+
+  updateStatusLight(isWeekend || Boolean(holidayName), hours);
+}
+
+// Evatec AG-area business-hours indicator: green during 8:00-17:00 on
+// weekdays, yellow outside those hours on weekdays, red on weekends/holidays.
+function updateStatusLight(isDayOff, hour) {
+  let status, label;
+  if (isDayOff) {
+    status = "red";
+    label = "休業日(土日祝)";
+  } else if (hour >= 8 && hour < 17) {
+    status = "green";
+    label = "営業時間内 (8:00-17:00)";
+  } else {
+    status = "yellow";
+    label = "営業時間外";
+  }
+  statusLightEl.classList.remove("status-green", "status-yellow", "status-red");
+  statusLightEl.classList.add(`status-${status}`);
+  statusLightEl.title = label;
 }
 
 // --- SBB railway clock ---

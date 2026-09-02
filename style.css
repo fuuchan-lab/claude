@@ -106,9 +106,25 @@ body::before {
 }
 
 .digital-date-line {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   margin-top: 1px;
 }
+
+.status-light {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+}
+
+.status-light.status-green { background: #2ea043; }
+.status-light.status-yellow { background: #d4a72c; }
+.status-light.status-red { background: var(--accent); }
 
 .digital-date {
   color: var(--muted);
@@ -121,9 +137,10 @@ body::before {
 }
 
 .holiday-label {
+  text-align: center;
   color: var(--accent);
-  font-size: 0.88rem;
-  margin-left: 4px;
+  font-size: 0.78rem;
+  margin-top: 1px;
 }
 
 .sun-times {
