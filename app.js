@@ -104,7 +104,7 @@ let currentChfToJpyRate = null;
 
 async function fetchFxRates() {
   try {
-    const url = "https://api.frankfurter.app/latest?from=CHF&to=JPY";
+    const url = "https://api.frankfurter.dev/v1/latest?base=CHF&symbols=JPY";
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -208,14 +208,16 @@ function describeWeatherCode(code) {
 const weatherIconEl = document.getElementById("weatherIcon");
 const weatherTempEl = document.getElementById("weatherTemp");
 const weatherDescEl = document.getElementById("weatherDesc");
+const weatherPressureEl = document.getElementById("weatherPressure");
 const weatherForecastEl = document.getElementById("weatherForecast");
 const weatherUpdatedEl = document.getElementById("weatherUpdated");
+const sunTimesEl = document.getElementById("sunTimes");
 
 async function fetchWeather() {
   try {
     const url =
       `https://api.open-meteo.com/v1/forecast?latitude=${TRUEBBACH_LAT}&longitude=${TRUEBBACH_LON}` +
-      `&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min` +
+      `&current=temperature_2m,weather_code,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset` +
       `&timezone=Europe%2FZurich&forecast_days=5`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -232,6 +234,11 @@ function renderWeather(data) {
   weatherIconEl.textContent = current.icon;
   weatherTempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
   weatherDescEl.textContent = current.label;
+  weatherPressureEl.textContent = `気圧: ${Math.round(data.current.pressure_msl)} hPa`;
+
+  const sunrise = data.daily.sunrise[0].split("T")[1];
+  const sunset = data.daily.sunset[0].split("T")[1];
+  sunTimesEl.textContent = `日出 ${sunrise} / 日没 ${sunset}`;
 
   const days = data.daily.time.map((dateStr, i) => ({
     date: dateStr,

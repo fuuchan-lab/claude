@@ -16,24 +16,25 @@
 
     <section class="panel panel--clock">
       <h2>スイス時刻 <span class="tz">(Europe/Zurich)</span></h2>
-      <div class="digital-time" id="digitalTime">--:--:--</div>
-      <div class="digital-date" id="digitalDate">----年--月--日 (-)</div>
-    </section>
-
-    <section class="panel panel--sbb">
-      <h2>スイス国鉄(SBB)クロック</h2>
-      <div class="sbb-clock-wrap">
-        <svg id="sbbClock" viewBox="0 0 200 200" class="sbb-clock">
-          <circle class="sbb-face" cx="100" cy="100" r="96"></circle>
-          <g id="sbbTicks"></g>
-          <line id="sbbHour" class="sbb-hand sbb-hand--hour" x1="100" y1="100" x2="100" y2="55"></line>
-          <line id="sbbMinute" class="sbb-hand sbb-hand--minute" x1="100" y1="100" x2="100" y2="30"></line>
-          <g id="sbbSecondGroup">
-            <line id="sbbSecond" class="sbb-hand sbb-hand--second" x1="100" y1="120" x2="100" y2="18"></line>
-            <circle id="sbbSecondDot" class="sbb-second-dot" cx="100" cy="18" r="7"></circle>
-          </g>
-          <circle class="sbb-hub" cx="100" cy="100" r="5"></circle>
-        </svg>
+      <div class="clock-combo">
+        <div class="sbb-clock-wrap">
+          <svg id="sbbClock" viewBox="0 0 200 200" class="sbb-clock">
+            <circle class="sbb-face" cx="100" cy="100" r="96"></circle>
+            <g id="sbbTicks"></g>
+            <line id="sbbHour" class="sbb-hand sbb-hand--hour" x1="100" y1="100" x2="100" y2="55"></line>
+            <line id="sbbMinute" class="sbb-hand sbb-hand--minute" x1="100" y1="100" x2="100" y2="30"></line>
+            <g id="sbbSecondGroup">
+              <line id="sbbSecond" class="sbb-hand sbb-hand--second" x1="100" y1="120" x2="100" y2="18"></line>
+              <circle id="sbbSecondDot" class="sbb-second-dot" cx="100" cy="18" r="7"></circle>
+            </g>
+            <circle class="sbb-hub" cx="100" cy="100" r="5"></circle>
+          </svg>
+        </div>
+        <div class="clock-combo__digital">
+          <div class="digital-time" id="digitalTime">--:--:--</div>
+          <div class="digital-date" id="digitalDate">----年--月--日 (-)</div>
+          <div class="sun-times" id="sunTimes">日出 --:-- / 日没 --:--</div>
+        </div>
       </div>
       <p class="sbb-note">実際のSBB時計は毎分の同期パルスで秒針が12時位置で一瞬停止する「stop2go」機構を再現しています。</p>
     </section>
@@ -59,7 +60,7 @@
             <span class="fx-calc__unit">円</span>
           </div>
         </div>
-        <a class="fx-oanda-link" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" title="OANDAの為替換算ページを開く">
+        <a class="link-btn" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" title="OANDAの為替換算ページを開く">
           OANDAで見る ↗
         </a>
       </div>
@@ -74,6 +75,7 @@
         <div class="weather-current-info">
           <div class="weather-temp" id="weatherTemp">--°C</div>
           <div class="weather-desc" id="weatherDesc">読み込み中...</div>
+          <div class="weather-pressure" id="weatherPressure">気圧: -- hPa</div>
         </div>
       </div>
       <div class="weather-forecast" id="weatherForecast"></div>
@@ -83,23 +85,21 @@
 
     <section class="panel panel--webcam">
       <h2>近くのライブカメラ</h2>
-      <div class="webcam-frame">
-        <iframe
-          src="https://www.sarganserland-werdenberg.ch/erholen/webcams"
-          title="Sarganserland-Werdenberg ライブカメラ"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
-      <p class="fx-note">
-        出典: Sarganserland-Werdenberg 観光局(Trübbach近郊)。表示されない場合は
-        <a href="https://www.sarganserland-werdenberg.ch/erholen/webcams" target="_blank" rel="noopener">こちらのページ</a>
-        で直接ご覧ください。
-      </p>
+      <a class="webcam-linkcard" href="https://www.sarganserland-werdenberg.ch/erholen/webcams" target="_blank" rel="noopener">
+        <span class="webcam-linkcard__icon">📷</span>
+        <span class="webcam-linkcard__text">
+          <strong>Sarganserland-Werdenberg ライブカメラ</strong>
+          <span>タップして観光局サイトのライブ映像を見る ↗</span>
+        </span>
+      </a>
+      <p class="fx-note">出典: Sarganserland-Werdenberg 観光局(Trübbach近郊)。サイト側の制限により埋め込み表示ができないため、リンク先で直接ご覧ください。</p>
     </section>
 
     <section class="panel panel--bus">
-      <h2>次のバス <span class="tz">Trübbach, Oberstufenzentrum</span></h2>
+      <h2>
+        次のバス <span class="tz">Trübbach, Oberstufenzentrum</span>
+        <a class="link-btn" href="https://www.sbb.ch/en/timetable.html" target="_blank" rel="noopener" title="SBBの乗換案内で調べる">SBBで見る ↗</a>
+      </h2>
       <ul class="bus-list" id="busList">
         <li class="bus-item bus-item--loading">読み込み中...</li>
       </ul>
