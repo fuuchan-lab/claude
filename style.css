@@ -21,10 +21,29 @@
 * { box-sizing: border-box; }
 
 body {
+  position: relative;
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #b9793f;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 2px, transparent 2px, transparent 160px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.12' numOctaves='4' seed='7' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0.55  0 0 0 0 0.35  0 0 0 0 0.16  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  background-size: auto, 280px 280px;
+  background-blend-mode: multiply, normal;
+  background-attachment: fixed, fixed;
+}
+
+@media (prefers-color-scheme: dark) {
+  body::before { filter: brightness(0.5) contrast(1.1); }
 }
 
 .dashboard {
@@ -41,12 +60,15 @@ body {
 .dashboard__header h1 {
   margin: 0 0 4px;
   font-size: 1.9rem;
+  color: #3b2312;
+  text-shadow: 0 1px 0 rgba(255, 224, 178, 0.4), 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .subtitle {
   margin: 0;
-  color: var(--muted);
   font-size: 0.95rem;
+  color: #4a2c17;
+  text-shadow: 0 1px 0 rgba(255, 224, 178, 0.35), 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .panel {
