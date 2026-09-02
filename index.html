@@ -18,11 +18,11 @@
   <main class="dashboard">
     <header class="dashboard__header">
       <h1>🇨🇭 Trübbach Dashboard</h1>
-      <p class="subtitle">スイスの現在時刻・為替レート・鉄道時計をリアルタイム表示</p>
+      <p class="subtitle" data-i18n="subtitle">スイスの現在時刻・為替レート・鉄道時計をリアルタイム表示</p>
     </header>
 
     <section class="panel panel--clock">
-      <h2>スイス時刻 <span class="tz">(Europe/Zurich)</span></h2>
+      <h2><span data-i18n="clockTitle">スイス時刻</span> <span class="tz">(Europe/Zurich)</span></h2>
       <div class="clock-combo">
         <div class="sbb-clock-wrap">
           <svg id="sbbClock" viewBox="0 0 200 200" class="sbb-clock">
@@ -47,17 +47,17 @@
           <div class="sun-times" id="sunTimes">日出 --:-- / 日没 --:--</div>
         </div>
       </div>
-      <p class="sbb-note">実際のSBB時計は毎分の同期パルスで秒針が12時位置で一瞬停止する「stop2go」機構を再現しています。</p>
+      <p class="sbb-note" data-i18n="sbbNote">実際のSBB時計は毎分の同期パルスで秒針が12時位置で一瞬停止する「stop2go」機構を再現しています。</p>
     </section>
 
     <section class="panel panel--fx">
-      <h2>スイスフラン (CHF) 為替レート</h2>
+      <h2><span data-i18n="fxTitle">スイスフラン (CHF) 為替レート</span></h2>
       <div class="fx-headline" id="fxHeadline">1 CHF = ---- 円</div>
       <p class="fx-updated" id="fxUpdated">最終更新: --</p>
 
       <div class="fx-calc">
         <div class="fx-calc__field">
-          <label for="fxCalcChf">スイスフラン</label>
+          <label for="fxCalcChf" data-i18n="fxLabelChf">スイスフラン</label>
           <div class="fx-calc__input-wrap">
             <input type="number" id="fxCalcChf" inputmode="decimal" placeholder="0" value="1">
             <span class="fx-calc__unit">CHF</span>
@@ -65,27 +65,27 @@
         </div>
         <div class="fx-calc__eq">=</div>
         <div class="fx-calc__field">
-          <label for="fxCalcJpy">日本円</label>
+          <label for="fxCalcJpy" data-i18n="fxLabelJpy">日本円</label>
           <div class="fx-calc__input-wrap">
             <input type="number" id="fxCalcJpy" inputmode="decimal" placeholder="0">
-            <span class="fx-calc__unit">円</span>
+            <span class="fx-calc__unit" data-i18n="unitJpy">円</span>
           </div>
         </div>
-        <a class="link-btn" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" title="OANDAの為替換算ページを開く">
-          OANDAで見る ↗
+        <a class="link-btn" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" data-i18n-title="oandaLinkTitle" title="OANDAの為替換算ページを開く">
+          <span data-i18n="oandaLinkText">OANDAで見る ↗</span>
         </a>
       </div>
 
-      <p class="fx-note">出典: Frankfurter API (欧州中央銀行 参考レート)。60秒ごとに自動更新します。</p>
+      <p class="fx-note" data-i18n="fxNote">出典: Frankfurter API (欧州中央銀行 参考レート)。60秒ごとに自動更新します。</p>
     </section>
 
     <section class="panel panel--weather">
-      <h2>Trübbach(トリュバッハ)の天気</h2>
+      <h2><span data-i18n="weatherTitle">Trübbach(トリュバッハ)の天気</span></h2>
       <div class="weather-current" id="weatherCurrent">
         <div class="weather-icon" id="weatherIcon">⛅</div>
         <div class="weather-current-info">
           <div class="weather-temp" id="weatherTemp">--°C</div>
-          <div class="weather-desc" id="weatherDesc">読み込み中...</div>
+          <div class="weather-desc" id="weatherDesc" data-i18n="loading">読み込み中...</div>
           <div class="weather-pressure" id="weatherPressure">気圧: -- hPa</div>
           <div class="weather-extra" id="weatherExtra">湿度: --% ・ 風速: -- km/h</div>
         </div>
@@ -93,34 +93,34 @@
       <div class="weather-moon" id="weatherMoon">🌔 月齢 -- (--)</div>
       <div class="weather-forecast" id="weatherForecast"></div>
       <p class="fx-updated" id="weatherUpdated">最終更新: --</p>
-      <p class="fx-note">出典: Open-Meteo (座標: Trübbach, Wartau SG)。10分ごとに自動更新します。月齢は天文計算による概算値です。</p>
+      <p class="fx-note" data-i18n="weatherNote">出典: Open-Meteo (座標: Trübbach, Wartau SG)。10分ごとに自動更新します。月齢は天文計算による概算値です。</p>
     </section>
 
     <section class="panel panel--webcam">
-      <h2>近くのライブカメラ <span class="tz">Balzers, FL</span></h2>
+      <h2><span data-i18n="webcamTitle">近くのライブカメラ</span> <span class="tz">Balzers, FL</span></h2>
       <div class="webcam-frame">
-        <img id="webcamImg" src="https://webcams.meteonews.net/webcams/orig/10116.jpg" alt="Balzers ライブカメラ" loading="lazy">
+        <img id="webcamImg" src="https://webcams.meteonews.net/webcams/orig/10116.jpg" data-i18n-alt="webcamAlt" alt="Balzers ライブカメラ" loading="lazy">
       </div>
       <a class="webcam-linkcard" id="webcamFallback" href="https://meteonews.ch/en/Webcam/W10116/Balzers" target="_blank" rel="noopener" hidden>
         <span class="webcam-linkcard__icon">📷</span>
         <span class="webcam-linkcard__text">
-          <strong>Balzers ライブカメラ (MeteoNews)</strong>
-          <span>画像を読み込めなかったため、タップして直接見る ↗</span>
+          <strong data-i18n="webcamFallbackTitle">Balzers ライブカメラ (MeteoNews)</strong>
+          <span data-i18n="webcamFallbackText">画像を読み込めなかったため、タップして直接見る ↗</span>
         </span>
       </a>
-      <p class="fx-note">出典: MeteoNews Webcam Balzers(Trübbach対岸)。1分ごとに画像を更新します。</p>
+      <p class="fx-note" data-i18n="webcamNote">出典: MeteoNews Webcam Balzers(Trübbach対岸)。1分ごとに画像を更新します。</p>
     </section>
 
     <section class="panel panel--bus">
       <h2>
-        次のバス <span class="tz">Trübbach, Oberstufenzentrum</span>
-        <a class="link-btn" href="https://www.sbb.ch/en/timetable.html" target="_blank" rel="noopener" title="SBBの乗換案内で調べる">SBBで見る ↗</a>
+        <span data-i18n="busTitle">次のバス</span> <span class="tz">Trübbach, Oberstufenzentrum</span>
+        <a class="link-btn" href="https://www.sbb.ch/en/timetable.html" target="_blank" rel="noopener" data-i18n-title="sbbLinkTitle" title="SBBの乗換案内で調べる"><span data-i18n="sbbLinkText">SBBで見る ↗</span></a>
       </h2>
       <ul class="bus-list" id="busList">
-        <li class="bus-item bus-item--loading">読み込み中...</li>
+        <li class="bus-item bus-item--loading" data-i18n="loading">読み込み中...</li>
       </ul>
       <p class="fx-updated" id="busUpdated">最終更新: --</p>
-      <p class="fx-note">出典: opendata.ch 公共交通機関API。30秒ごとに自動更新します。</p>
+      <p class="fx-note" data-i18n="busNote">出典: opendata.ch 公共交通機関API。30秒ごとに自動更新します。</p>
     </section>
   </main>
 

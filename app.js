@@ -4,6 +4,125 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// --- i18n: Japanese if the browser/OS locale is Japanese, English otherwise ---
+const LANG = (navigator.language || "ja").toLowerCase().startsWith("ja") ? "ja" : "en";
+const LOCALE = LANG === "ja" ? "ja-JP" : "en-GB";
+
+const STRINGS = {
+  ja: {
+    subtitle: "スイスの現在時刻・為替レート・鉄道時計をリアルタイム表示",
+    clockTitle: "スイス時刻",
+    sbbNote: "実際のSBB時計は毎分の同期パルスで秒針が12時位置で一瞬停止する「stop2go」機構を再現しています。",
+    fxTitle: "スイスフラン (CHF) 為替レート",
+    fxLabelChf: "スイスフラン",
+    fxLabelJpy: "日本円",
+    unitJpy: "円",
+    oandaLinkTitle: "OANDAの為替換算ページを開く",
+    oandaLinkText: "OANDAで見る ↗",
+    fxNote: "出典: Frankfurter API (欧州中央銀行 参考レート)。60秒ごとに自動更新します。",
+    weatherTitle: "Trübbach(トリュバッハ)の天気",
+    weatherNote: "出典: Open-Meteo (座標: Trübbach, Wartau SG)。10分ごとに自動更新します。月齢は天文計算による概算値です。",
+    webcamTitle: "近くのライブカメラ",
+    webcamAlt: "Balzers ライブカメラ",
+    webcamFallbackTitle: "Balzers ライブカメラ (MeteoNews)",
+    webcamFallbackText: "画像を読み込めなかったため、タップして直接見る ↗",
+    webcamNote: "出典: MeteoNews Webcam Balzers(Trübbach対岸)。1分ごとに画像を更新します。",
+    busTitle: "次のバス",
+    sbbLinkTitle: "SBBの乗換案内で調べる",
+    sbbLinkText: "SBBで見る ↗",
+    busNote: "出典: opendata.ch 公共交通機関API。30秒ごとに自動更新します。",
+
+    loading: "読み込み中...",
+    updatedPrefix: "最終更新: ",
+    asOfPrefix: "レート基準日: ",
+    fxRateFailed: "レート取得に失敗しました",
+    weatherFailed: "天気情報の取得に失敗しました。しばらくして再試行します。",
+    busFailed: "バス時刻表の取得に失敗しました。しばらくして再試行します。",
+    busNoDepartures: "現在予定されている便がありません。",
+    departingNow: "まもなく発車",
+    minutesLater: (m) => `${m}分後`,
+    hoursMinutesLater: (h, m) => `${h}時間${m}分後`,
+    delaySuffix: (d) => `+${d}分遅れ`,
+    busDest: (d) => `${d} 方面`,
+    busDeparts: (t) => `${t}発`,
+    statusDayOff: "休業日(土日祝)",
+    statusOpen: "営業時間内 (8:00-17:00)",
+    statusClosed: "営業時間外",
+    pressureLabel: (v) => `気圧: ${v} hPa`,
+    extraLabel: (h, w) => `湿度: ${h}% ・ 風速: ${w} km/h`,
+    sunTimes: (sr, ss) => `日出 ${sr} / 日没 ${ss}`,
+    moonLabel: (age, label) => `月齢 ${age} (${label})`,
+    unknownWeather: "不明",
+  },
+  en: {
+    subtitle: "Live Swiss time, exchange rate and railway clock",
+    clockTitle: "Swiss Time",
+    sbbNote: "Recreates the real SBB clock's \"stop2go\" mechanism: the second hand sweeps in 58.5s, then pauses at 12 for 1.5s until the next minute's sync pulse.",
+    fxTitle: "Swiss Franc (CHF) Exchange Rate",
+    fxLabelChf: "Swiss Francs",
+    fxLabelJpy: "Japanese Yen",
+    unitJpy: "JPY",
+    oandaLinkTitle: "Open OANDA's currency converter",
+    oandaLinkText: "View on OANDA ↗",
+    fxNote: "Source: Frankfurter API (ECB reference rates). Refreshes every 60s.",
+    weatherTitle: "Weather in Trübbach",
+    weatherNote: "Source: Open-Meteo (coordinates: Trübbach, Wartau SG). Refreshes every 10 min. Moon phase is an astronomical approximation.",
+    webcamTitle: "Nearby Live Camera",
+    webcamAlt: "Balzers live camera",
+    webcamFallbackTitle: "Balzers Live Camera (MeteoNews)",
+    webcamFallbackText: "Image failed to load — tap to view it directly ↗",
+    webcamNote: "Source: MeteoNews Webcam Balzers (across the river from Trübbach). Image refreshes every minute.",
+    busTitle: "Next Buses",
+    sbbLinkTitle: "Look it up on SBB's journey planner",
+    sbbLinkText: "View on SBB ↗",
+    busNote: "Source: opendata.ch public transport API. Refreshes every 30s.",
+
+    loading: "Loading...",
+    updatedPrefix: "Updated: ",
+    asOfPrefix: "as of ",
+    fxRateFailed: "Failed to fetch rate",
+    weatherFailed: "Failed to load weather. Retrying shortly.",
+    busFailed: "Failed to load bus times. Retrying shortly.",
+    busNoDepartures: "No upcoming departures.",
+    departingNow: "Departing now",
+    minutesLater: (m) => `in ${m} min`,
+    hoursMinutesLater: (h, m) => `in ${h}h ${m}m`,
+    delaySuffix: (d) => `+${d} min delay`,
+    busDest: (d) => `to ${d}`,
+    busDeparts: (t) => `dep. ${t}`,
+    statusDayOff: "Closed (weekend/holiday)",
+    statusOpen: "Open (8:00-17:00)",
+    statusClosed: "Closed (outside hours)",
+    pressureLabel: (v) => `Pressure: ${v} hPa`,
+    extraLabel: (h, w) => `Humidity: ${h}% · Wind: ${w} km/h`,
+    sunTimes: (sr, ss) => `Sunrise ${sr} / Sunset ${ss}`,
+    moonLabel: (age, label) => `Moon age ${age} (${label})`,
+    unknownWeather: "Unknown",
+  },
+};
+
+function tr(key, ...args) {
+  const entry = STRINGS[LANG][key];
+  return typeof entry === "function" ? entry(...args) : entry;
+}
+
+function applyStaticTranslations() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (STRINGS[LANG][key]) el.textContent = tr(key);
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (STRINGS[LANG][key]) el.title = tr(key);
+  });
+  document.querySelectorAll("[data-i18n-alt]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-alt");
+    if (STRINGS[LANG][key]) el.alt = tr(key);
+  });
+}
+applyStaticTranslations();
+
 const ZURICH_TZ = "Europe/Zurich";
 
 const digitalTimeEl = document.getElementById("digitalTime");
@@ -19,7 +138,7 @@ const timeFormatter = new Intl.DateTimeFormat("en-GB", {
   second: "2-digit",
 });
 
-const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
+const dateFormatter = new Intl.DateTimeFormat(LOCALE, {
   timeZone: ZURICH_TZ,
   year: "numeric",
   month: "long",
@@ -74,34 +193,34 @@ function computeEasterSunday(year) {
 
 function buildHolidayMap(year) {
   const map = {};
-  const setKey = (date, name) => {
+  const setKey = (date, ja, en) => {
     const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
     const dd = String(date.getUTCDate()).padStart(2, "0");
-    map[`${mm}-${dd}`] = name;
+    map[`${mm}-${dd}`] = { ja, en };
   };
-  const setOffset = (base, days, name) => {
+  const setOffset = (base, days, ja, en) => {
     const d = new Date(base.getTime());
     d.setUTCDate(d.getUTCDate() + days);
-    setKey(d, name);
+    setKey(d, ja, en);
   };
 
   const easter = computeEasterSunday(year);
-  setKey(new Date(Date.UTC(year, 0, 1)), "元日");
-  setKey(new Date(Date.UTC(year, 0, 2)), "ベルヒトルトの日");
-  setOffset(easter, -2, "聖金曜日");
-  setOffset(easter, 1, "イースターマンデー");
-  setOffset(easter, 39, "キリスト昇天祭");
-  setOffset(easter, 50, "聖霊降臨祭の月曜日");
-  setKey(new Date(Date.UTC(year, 7, 1)), "スイス建国記念日");
+  setKey(new Date(Date.UTC(year, 0, 1)), "元日", "New Year's Day");
+  setKey(new Date(Date.UTC(year, 0, 2)), "ベルヒトルトの日", "Berchtold's Day");
+  setOffset(easter, -2, "聖金曜日", "Good Friday");
+  setOffset(easter, 1, "イースターマンデー", "Easter Monday");
+  setOffset(easter, 39, "キリスト昇天祭", "Ascension Day");
+  setOffset(easter, 50, "聖霊降臨祭の月曜日", "Whit Monday");
+  setKey(new Date(Date.UTC(year, 7, 1)), "スイス建国記念日", "Swiss National Day");
 
   // Bettag: third Sunday of September, coordinated nationwide.
   const sep1Weekday = new Date(Date.UTC(year, 8, 1)).getUTCDay();
   const firstSunday = 1 + ((7 - sep1Weekday) % 7);
-  setKey(new Date(Date.UTC(year, 8, firstSunday + 14)), "連邦感謝祈祷の日");
+  setKey(new Date(Date.UTC(year, 8, firstSunday + 14)), "連邦感謝祈祷の日", "Federal Day of Prayer");
 
-  setKey(new Date(Date.UTC(year, 10, 1)), "諸聖人の日");
-  setKey(new Date(Date.UTC(year, 11, 25)), "クリスマス");
-  setKey(new Date(Date.UTC(year, 11, 26)), "聖ステファノの日");
+  setKey(new Date(Date.UTC(year, 10, 1)), "諸聖人の日", "All Saints' Day");
+  setKey(new Date(Date.UTC(year, 11, 25)), "クリスマス", "Christmas Day");
+  setKey(new Date(Date.UTC(year, 11, 26)), "聖ステファノの日", "St. Stephen's Day");
   return map;
 }
 
@@ -109,7 +228,8 @@ const holidayMapByYear = {};
 
 function getHolidayName(year, month, day) {
   if (!holidayMapByYear[year]) holidayMapByYear[year] = buildHolidayMap(year);
-  return holidayMapByYear[year][`${month}-${day}`];
+  const entry = holidayMapByYear[year][`${month}-${day}`];
+  return entry ? entry[LANG] : undefined;
 }
 
 function updateDigitalClock(date) {
@@ -144,13 +264,13 @@ function updateStatusLight(isDayOff, hour) {
   let status, label;
   if (isDayOff) {
     status = "red";
-    label = "休業日(土日祝)";
+    label = tr("statusDayOff");
   } else if (hour >= 8 && hour < 17) {
     status = "green";
-    label = "営業時間内 (8:00-17:00)";
+    label = tr("statusOpen");
   } else {
     status = "yellow";
-    label = "営業時間外";
+    label = tr("statusClosed");
   }
   statusLightEl.classList.remove("status-green", "status-yellow", "status-red");
   statusLightEl.classList.add(`status-${status}`);
@@ -231,7 +351,7 @@ async function fetchFxRates() {
     const data = await res.json();
     renderFxRates(data);
   } catch (err) {
-    fxHeadlineEl.textContent = "レート取得に失敗しました";
+    fxHeadlineEl.textContent = tr("fxRateFailed");
     console.error("FX fetch failed", err);
   }
 }
@@ -240,9 +360,9 @@ function renderFxRates(data) {
   const rate = data.rates.JPY;
   if (typeof rate !== "number") return;
   currentChfToJpyRate = rate;
-  fxHeadlineEl.textContent = `1 CHF = ${rate.toFixed(2)} 円`;
+  fxHeadlineEl.textContent = `1 CHF = ${rate.toFixed(2)} ${tr("unitJpy")}`;
   const now = new Date();
-  fxUpdatedEl.textContent = `最終更新: ${now.toLocaleTimeString("ja-JP")} (レート基準日: ${data.date})`;
+  fxUpdatedEl.textContent = `${tr("updatedPrefix")}${now.toLocaleTimeString(LOCALE)} (${tr("asOfPrefix")}${data.date})`;
   recalcFromChf();
 }
 
@@ -292,38 +412,40 @@ const TRUEBBACH_LAT = 47.2064;
 const TRUEBBACH_LON = 9.4826;
 
 const WEATHER_CODE_MAP = {
-  0: { icon: "☀️", label: "快晴" },
-  1: { icon: "🌤️", label: "ほぼ晴れ" },
-  2: { icon: "⛅", label: "一部曇り" },
-  3: { icon: "☁️", label: "曇り" },
-  45: { icon: "🌫️", label: "霧" },
-  48: { icon: "🌫️", label: "霧氷を伴う霧" },
-  51: { icon: "🌦️", label: "弱い霧雨" },
-  53: { icon: "🌦️", label: "霧雨" },
-  55: { icon: "🌦️", label: "強い霧雨" },
-  56: { icon: "🌧️", label: "着氷性の弱い霧雨" },
-  57: { icon: "🌧️", label: "着氷性の霧雨" },
-  61: { icon: "🌧️", label: "弱い雨" },
-  63: { icon: "🌧️", label: "雨" },
-  65: { icon: "🌧️", label: "強い雨" },
-  66: { icon: "🌧️", label: "着氷性の弱い雨" },
-  67: { icon: "🌧️", label: "着氷性の雨" },
-  71: { icon: "🌨️", label: "弱い雪" },
-  73: { icon: "🌨️", label: "雪" },
-  75: { icon: "❄️", label: "強い雪" },
-  77: { icon: "❄️", label: "霧雪" },
-  80: { icon: "🌦️", label: "弱いにわか雨" },
-  81: { icon: "🌦️", label: "にわか雨" },
-  82: { icon: "⛈️", label: "激しいにわか雨" },
-  85: { icon: "🌨️", label: "弱いにわか雪" },
-  86: { icon: "🌨️", label: "にわか雪" },
-  95: { icon: "⛈️", label: "雷雨" },
-  96: { icon: "⛈️", label: "雹を伴う雷雨" },
-  99: { icon: "⛈️", label: "激しい雹を伴う雷雨" },
+  0: { icon: "☀️", ja: "快晴", en: "Clear sky" },
+  1: { icon: "🌤️", ja: "ほぼ晴れ", en: "Mainly clear" },
+  2: { icon: "⛅", ja: "一部曇り", en: "Partly cloudy" },
+  3: { icon: "☁️", ja: "曇り", en: "Overcast" },
+  45: { icon: "🌫️", ja: "霧", en: "Fog" },
+  48: { icon: "🌫️", ja: "霧氷を伴う霧", en: "Rime fog" },
+  51: { icon: "🌦️", ja: "弱い霧雨", en: "Light drizzle" },
+  53: { icon: "🌦️", ja: "霧雨", en: "Drizzle" },
+  55: { icon: "🌦️", ja: "強い霧雨", en: "Dense drizzle" },
+  56: { icon: "🌧️", ja: "着氷性の弱い霧雨", en: "Light freezing drizzle" },
+  57: { icon: "🌧️", ja: "着氷性の霧雨", en: "Freezing drizzle" },
+  61: { icon: "🌧️", ja: "弱い雨", en: "Light rain" },
+  63: { icon: "🌧️", ja: "雨", en: "Rain" },
+  65: { icon: "🌧️", ja: "強い雨", en: "Heavy rain" },
+  66: { icon: "🌧️", ja: "着氷性の弱い雨", en: "Light freezing rain" },
+  67: { icon: "🌧️", ja: "着氷性の雨", en: "Freezing rain" },
+  71: { icon: "🌨️", ja: "弱い雪", en: "Light snow" },
+  73: { icon: "🌨️", ja: "雪", en: "Snow" },
+  75: { icon: "❄️", ja: "強い雪", en: "Heavy snow" },
+  77: { icon: "❄️", ja: "霧雪", en: "Snow grains" },
+  80: { icon: "🌦️", ja: "弱いにわか雨", en: "Light rain showers" },
+  81: { icon: "🌦️", ja: "にわか雨", en: "Rain showers" },
+  82: { icon: "⛈️", ja: "激しいにわか雨", en: "Violent rain showers" },
+  85: { icon: "🌨️", ja: "弱いにわか雪", en: "Light snow showers" },
+  86: { icon: "🌨️", ja: "にわか雪", en: "Snow showers" },
+  95: { icon: "⛈️", ja: "雷雨", en: "Thunderstorm" },
+  96: { icon: "⛈️", ja: "雹を伴う雷雨", en: "Thunderstorm with hail" },
+  99: { icon: "⛈️", ja: "激しい雹を伴う雷雨", en: "Severe thunderstorm with hail" },
 };
 
 function describeWeatherCode(code) {
-  return WEATHER_CODE_MAP[code] || { icon: "❓", label: "不明" };
+  const entry = WEATHER_CODE_MAP[code];
+  if (!entry) return { icon: "❓", label: tr("unknownWeather") };
+  return { icon: entry.icon, label: entry[LANG] };
 }
 
 const weatherIconEl = document.getElementById("weatherIcon");
@@ -347,7 +469,7 @@ async function fetchWeather() {
     const data = await res.json();
     renderWeather(data);
   } catch (err) {
-    weatherDescEl.textContent = "天気情報の取得に失敗しました。しばらくして再試行します。";
+    weatherDescEl.textContent = tr("weatherFailed");
     console.error("Weather fetch failed", err);
   }
 }
@@ -357,15 +479,15 @@ const SYNODIC_MONTH_DAYS = 29.53058867;
 const KNOWN_NEW_MOON_MS = Date.UTC(2000, 0, 6, 18, 14); // a reference new moon
 
 const MOON_PHASES = [
-  { max: 0.03, emoji: "🌑", label: "新月" },
-  { max: 0.22, emoji: "🌒", label: "三日月" },
-  { max: 0.28, emoji: "🌓", label: "上弦の月" },
-  { max: 0.47, emoji: "🌔", label: "十三夜" },
-  { max: 0.53, emoji: "🌕", label: "満月" },
-  { max: 0.72, emoji: "🌖", label: "十六夜" },
-  { max: 0.78, emoji: "🌗", label: "下弦の月" },
-  { max: 0.97, emoji: "🌘", label: "二十六夜" },
-  { max: 1.01, emoji: "🌑", label: "新月" },
+  { max: 0.03, emoji: "🌑", ja: "新月", en: "New Moon" },
+  { max: 0.22, emoji: "🌒", ja: "三日月", en: "Waxing Crescent" },
+  { max: 0.28, emoji: "🌓", ja: "上弦の月", en: "First Quarter" },
+  { max: 0.47, emoji: "🌔", ja: "十三夜", en: "Waxing Gibbous" },
+  { max: 0.53, emoji: "🌕", ja: "満月", en: "Full Moon" },
+  { max: 0.72, emoji: "🌖", ja: "十六夜", en: "Waning Gibbous" },
+  { max: 0.78, emoji: "🌗", ja: "下弦の月", en: "Last Quarter" },
+  { max: 0.97, emoji: "🌘", ja: "二十六夜", en: "Waning Crescent" },
+  { max: 1.01, emoji: "🌑", ja: "新月", en: "New Moon" },
 ];
 
 function getMoonPhase(date) {
@@ -374,12 +496,12 @@ function getMoonPhase(date) {
   const normalizedAge = age < 0 ? age + SYNODIC_MONTH_DAYS : age;
   const fraction = normalizedAge / SYNODIC_MONTH_DAYS;
   const phase = MOON_PHASES.find((p) => fraction <= p.max) || MOON_PHASES[0];
-  return { ...phase, age: normalizedAge };
+  return { emoji: phase.emoji, label: phase[LANG], age: normalizedAge };
 }
 
 function updateMoonPhase() {
   const { emoji, label, age } = getMoonPhase(new Date());
-  weatherMoonEl.innerHTML = `<span class="moon-emoji">${emoji}</span> 月齢 ${age.toFixed(1)} (${label})`;
+  weatherMoonEl.innerHTML = `<span class="moon-emoji">${emoji}</span> ${tr("moonLabel", age.toFixed(1), label)}`;
 }
 
 function renderWeather(data) {
@@ -387,13 +509,17 @@ function renderWeather(data) {
   weatherIconEl.textContent = current.icon;
   weatherTempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
   weatherDescEl.textContent = current.label;
-  weatherPressureEl.textContent = `気圧: ${Math.round(data.current.pressure_msl)} hPa`;
-  weatherExtraEl.textContent = `湿度: ${Math.round(data.current.relative_humidity_2m)}% ・ 風速: ${data.current.wind_speed_10m.toFixed(1)} km/h`;
+  weatherPressureEl.textContent = tr("pressureLabel", Math.round(data.current.pressure_msl));
+  weatherExtraEl.textContent = tr(
+    "extraLabel",
+    Math.round(data.current.relative_humidity_2m),
+    data.current.wind_speed_10m.toFixed(1)
+  );
   updateMoonPhase();
 
   const sunrise = data.daily.sunrise[0].split("T")[1];
   const sunset = data.daily.sunset[0].split("T")[1];
-  sunTimesEl.textContent = `日出 ${sunrise} / 日没 ${sunset}`;
+  sunTimesEl.textContent = tr("sunTimes", sunrise, sunset);
 
   const days = data.daily.time.map((dateStr, i) => ({
     date: dateStr,
@@ -402,7 +528,7 @@ function renderWeather(data) {
     min: data.daily.temperature_2m_min[i],
   }));
 
-  const dayFormatter = new Intl.DateTimeFormat("ja-JP", { weekday: "short", day: "numeric" });
+  const dayFormatter = new Intl.DateTimeFormat(LOCALE, { weekday: "short", day: "numeric" });
   weatherForecastEl.innerHTML = days
     .map((day) => {
       const desc = describeWeatherCode(day.code);
@@ -416,7 +542,7 @@ function renderWeather(data) {
     })
     .join("");
 
-  weatherUpdatedEl.textContent = `最終更新: ${new Date().toLocaleTimeString("ja-JP")}`;
+  weatherUpdatedEl.textContent = `${tr("updatedPrefix")}${new Date().toLocaleTimeString(LOCALE)}`;
 }
 
 fetchWeather();
@@ -441,11 +567,11 @@ async function resolveStationId() {
 }
 
 function formatCountdown(minutes) {
-  if (minutes <= 0) return "まもなく発車";
-  if (minutes < 60) return `${minutes}分後`;
+  if (minutes <= 0) return tr("departingNow");
+  if (minutes < 60) return tr("minutesLater", minutes);
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  return `${h}時間${m}分後`;
+  return tr("hoursMinutesLater", h, m);
 }
 
 const BUS_DISPLAY_COUNT = 4;
@@ -458,14 +584,14 @@ async function fetchBusDepartures() {
     const data = await res.json();
     renderBusDepartures(data.stationboard || []);
   } catch (err) {
-    busListEl.innerHTML = `<li class="bus-item bus-item--loading">バス時刻表の取得に失敗しました。しばらくして再試行します。</li>`;
+    busListEl.innerHTML = `<li class="bus-item bus-item--loading">${tr("busFailed")}</li>`;
     console.error("Bus fetch failed", err);
   }
 }
 
 function renderBusDepartures(entries) {
   if (!entries.length) {
-    busListEl.innerHTML = `<li class="bus-item bus-item--loading">現在予定されている便がありません。</li>`;
+    busListEl.innerHTML = `<li class="bus-item bus-item--loading">${tr("busNoDepartures")}</li>`;
     return;
   }
   const now = Date.now();
@@ -476,22 +602,22 @@ function renderBusDepartures(entries) {
       const departureIso = entry.stop && entry.stop.departure;
       const departureDate = departureIso ? new Date(departureIso) : null;
       const timeStr = departureDate
-        ? departureDate.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+        ? departureDate.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })
         : "--:--";
       const minutesUntil = departureDate ? Math.round((departureDate.getTime() - now) / 60000) : null;
       const countdown = minutesUntil !== null ? formatCountdown(minutesUntil) : "";
       const delay = entry.stop && entry.stop.delay;
-      const delayStr = delay ? `<span class="bus-delay">+${delay}分遅れ</span>` : "";
+      const delayStr = delay ? `<span class="bus-delay">${tr("delaySuffix", delay)}</span>` : "";
       return `
         <li class="bus-item">
           <span class="bus-line">${line}</span>
-          <span class="bus-dest">${dest} 方面</span>
+          <span class="bus-dest">${tr("busDest", dest)}</span>
           <span class="bus-countdown">${countdown}</span>
-          <span class="bus-time">${timeStr}発${delayStr}</span>
+          <span class="bus-time">${tr("busDeparts", timeStr)}${delayStr}</span>
         </li>`;
     })
     .join("");
-  busUpdatedEl.textContent = `最終更新: ${new Date().toLocaleTimeString("ja-JP")}`;
+  busUpdatedEl.textContent = `${tr("updatedPrefix")}${new Date().toLocaleTimeString(LOCALE)}`;
 }
 
 fetchBusDepartures();
