@@ -1,0 +1,331 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7;
+  --panel-bg: #ffffff;
+  --text: #1c1e21;
+  --muted: #6b7280;
+  --accent: #d52b1e; /* Swiss red */
+  --border: #e2e4e8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a;
+    --panel-bg: #1e2126;
+    --text: #f0f1f3;
+    --muted: #9aa0a8;
+    --border: #2c2f36;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+}
+
+.dashboard {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.dashboard__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.dashboard__header h1 {
+  margin: 0 0 4px;
+  font-size: 1.9rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.tz {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: normal;
+}
+
+.digital-time {
+  font-size: 3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.digital-date {
+  text-align: center;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.sbb-clock-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.sbb-clock {
+  width: 220px;
+  height: 220px;
+}
+
+.sbb-face {
+  fill: #ffffff;
+  stroke: #1c1e21;
+  stroke-width: 2;
+}
+
+.sbb-tick-major {
+  stroke: #1c1e21;
+  stroke-width: 3;
+}
+
+.sbb-tick-minor {
+  stroke: #1c1e21;
+  stroke-width: 1.2;
+}
+
+.sbb-hand {
+  stroke-linecap: round;
+}
+
+.sbb-hand--hour {
+  stroke: #1c1e21;
+  stroke-width: 7;
+}
+
+.sbb-hand--minute {
+  stroke: #1c1e21;
+  stroke-width: 5;
+}
+
+.sbb-hand--second {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.sbb-second-dot {
+  fill: var(--accent);
+}
+
+.sbb-hub {
+  fill: #1c1e21;
+}
+
+.sbb-note, .fx-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+  margin: 8px 0 0;
+}
+
+.fx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fx-table th, .fx-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.fx-table th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.fx-table td {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+}
+
+.fx-updated {
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 10px 0 0;
+}
+
+.weather-current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 0 16px;
+}
+
+.weather-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.weather-current-info {
+  text-align: left;
+}
+
+.weather-temp {
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.weather-desc {
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.weather-forecast {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.forecast-day {
+  text-align: center;
+  min-width: 76px;
+}
+
+.forecast-day .fd-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.forecast-day .fd-icon {
+  font-size: 1.8rem;
+  margin: 4px 0;
+}
+
+.forecast-day .fd-temps {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.forecast-day .fd-temps .max {
+  font-weight: 700;
+}
+
+.forecast-day .fd-temps .min {
+  color: var(--muted);
+}
+
+.webcam-frame {
+  max-width: 360px;
+  height: 220px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.webcam-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.bus-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bus-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bus-item:last-child {
+  border-bottom: none;
+}
+
+.bus-item--loading {
+  color: var(--muted);
+  justify-content: center;
+}
+
+.bus-line {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.bus-dest {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bus-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: right;
+  min-width: 88px;
+}
+
+.bus-countdown {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 84px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.bus-delay {
+  color: var(--accent);
+  font-size: 0.78rem;
+  margin-left: 4px;
+}
+
+@media (max-width: 480px) {
+  .digital-time { font-size: 2.2rem; }
+  .sbb-clock { width: 180px; height: 180px; }
+  .weather-current { gap: 12px; }
+  .bus-dest { white-space: normal; }
+}
