@@ -35,7 +35,7 @@ const STRINGS = {
     qrCaption: "このアプリのダウンロードはこちら",
     hotelLinkTitle: "出張・出張時のホテル予約におすすめ",
     hotelLinkText: "🏨 スイスのホテル予約 (Booking.com)",
-    installTitle: "このアプリのダウンロード方法",
+    installTitle: "アプリとしての登録方法",
     installIosLabel: "iPhone:",
     installIosSteps: "Safariで開き、共有ボタン→「ホーム画面に追加」",
     installAndroidLabel: "Android:",
