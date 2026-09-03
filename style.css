@@ -59,12 +59,19 @@ body::before {
   margin-bottom: 10px;
 }
 
+.hotel-link {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 14px;
+  padding: 14px 20px;
+  font-size: 1.05rem;
+}
+
 .dashboard__footer {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
-  margin-top: 8px;
 }
 
 .qr-block {
