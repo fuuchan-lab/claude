@@ -361,6 +361,44 @@ const fxOandaLinkEl = document.getElementById("fxOandaLink");
 
 let currentChfToJpyRate = null;
 
+function sanitizeNumericString(str) {
+  let cleaned = str.replace(/[^\d.]/g, "");
+  const firstDot = cleaned.indexOf(".");
+  if (firstDot !== -1) {
+    cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "");
+  }
+  return cleaned;
+}
+
+function formatNumberWithCommas(cleaned) {
+  if (cleaned === "" || cleaned === ".") return cleaned;
+  const [intPart, decPart] = cleaned.split(".");
+  const trimmedInt = intPart.replace(/^0+(?=\d)/, "");
+  const formattedInt = (trimmedInt === "" ? "0" : trimmedInt).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return decPart !== undefined ? `${formattedInt}.${decPart}` : formattedInt;
+}
+
+function parseNumericInput(str) {
+  const cleaned = sanitizeNumericString(str);
+  if (cleaned === "" || cleaned === ".") return NaN;
+  return parseFloat(cleaned);
+}
+
+function formatCalcResult(value) {
+  return formatNumberWithCommas(String(roundForDisplay(value)));
+}
+
+function attachThousandsFormatting(inputEl) {
+  inputEl.addEventListener("input", () => {
+    const cursorFromEnd = inputEl.value.length - inputEl.selectionStart;
+    const cleaned = sanitizeNumericString(inputEl.value);
+    const formatted = formatNumberWithCommas(cleaned);
+    inputEl.value = formatted;
+    const newPos = Math.max(0, formatted.length - cursorFromEnd);
+    inputEl.setSelectionRange(newPos, newPos);
+  });
+}
+
 async function fetchFxRates() {
   try {
     const url = "https://api.frankfurter.dev/v1/latest?base=CHF&symbols=JPY";
@@ -386,22 +424,22 @@ function renderFxRates(data) {
 
 function recalcFromChf() {
   if (currentChfToJpyRate === null) return;
-  const chf = parseFloat(fxCalcChfEl.value);
+  const chf = parseNumericInput(fxCalcChfEl.value);
   if (Number.isNaN(chf)) {
     fxCalcJpyEl.value = "";
   } else {
-    fxCalcJpyEl.value = roundForDisplay(chf * currentChfToJpyRate);
+    fxCalcJpyEl.value = formatCalcResult(chf * currentChfToJpyRate);
   }
   updateOandaLink();
 }
 
 function recalcFromJpy() {
   if (currentChfToJpyRate === null) return;
-  const jpy = parseFloat(fxCalcJpyEl.value);
+  const jpy = parseNumericInput(fxCalcJpyEl.value);
   if (Number.isNaN(jpy)) {
     fxCalcChfEl.value = "";
   } else {
-    fxCalcChfEl.value = roundForDisplay(jpy / currentChfToJpyRate);
+    fxCalcChfEl.value = formatCalcResult(jpy / currentChfToJpyRate);
   }
   updateOandaLink();
 }
@@ -411,11 +449,13 @@ function roundForDisplay(value) {
 }
 
 function updateOandaLink() {
-  const jpy = parseFloat(fxCalcJpyEl.value);
+  const jpy = parseNumericInput(fxCalcJpyEl.value);
   const amount = Number.isNaN(jpy) ? 1 : jpy;
   fxOandaLinkEl.href = `https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=${amount}`;
 }
 
+attachThousandsFormatting(fxCalcChfEl);
+attachThousandsFormatting(fxCalcJpyEl);
 fxCalcChfEl.addEventListener("input", recalcFromChf);
 fxCalcJpyEl.addEventListener("input", recalcFromJpy);
 
