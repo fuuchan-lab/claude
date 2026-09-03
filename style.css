@@ -59,19 +59,24 @@ body::before {
   margin-bottom: 10px;
 }
 
-.hotel-link {
-  display: flex;
-  justify-content: center;
-  margin: 4px 0 14px;
-  padding: 14px 20px;
-  font-size: 1.05rem;
+.link-btn.hotel-link {
+  background: #003580;
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  line-height: 1.15;
+  white-space: normal;
+  text-align: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .dashboard__footer {
   display: flex;
   align-items: flex-end;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 12px;
+  margin-top: 8px;
 }
 
 .qr-block {
@@ -79,7 +84,7 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .qr-code {
