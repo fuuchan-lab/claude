@@ -59,6 +59,38 @@ body::before {
   margin-bottom: 10px;
 }
 
+.dashboard__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.qr-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.qr-code {
+  display: block;
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.qr-caption {
+  margin: 0;
+  max-width: 110px;
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
 .dashboard__header h1 {
   margin: 0;
   font-size: 1.4rem;

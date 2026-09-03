@@ -31,6 +31,10 @@ const STRINGS = {
     sbbLinkTitle: "SBBの乗換案内で調べる",
     sbbLinkText: "SBBで見る ↗",
     busNote: "出典: opendata.ch 公共交通機関API。30秒ごとに自動更新します。",
+    qrCodeAlt: "このページのQRコード",
+    qrCaption: "このアプリのダウンロードはこちら",
+    hotelLinkTitle: "出張・出張時のホテル予約におすすめ",
+    hotelLinkText: "🏨 スイスのホテル予約 (Booking.com)",
 
     loading: "読み込み中...",
     updatedPrefix: "最終更新: ",
@@ -76,6 +80,10 @@ const STRINGS = {
     sbbLinkTitle: "Look it up on SBB's journey planner",
     sbbLinkText: "View on SBB ↗",
     busNote: "Source: opendata.ch public transport API. Refreshes every 30s.",
+    qrCodeAlt: "QR code for this page",
+    qrCaption: "Download this app here",
+    hotelLinkTitle: "Recommended for booking hotels for business trips to Switzerland",
+    hotelLinkText: "🏨 Book a Hotel in Switzerland (Booking.com)",
 
     loading: "Loading...",
     updatedPrefix: "Updated: ",
