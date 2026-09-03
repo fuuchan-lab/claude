@@ -61,7 +61,7 @@ body::before {
 
 .link-btn.hotel-link {
   background: #003580;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   padding: 10px 16px;
   line-height: 1.25;
@@ -76,7 +76,7 @@ body::before {
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: -8px;
 }
 
 .qr-block {
