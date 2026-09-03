@@ -52,7 +52,12 @@
 
     <section class="panel panel--fx">
       <h2><span data-i18n="fxTitle">スイスフラン (CHF) 為替レート</span></h2>
-      <div class="fx-headline" id="fxHeadline">1 CHF = ---- 円</div>
+      <div class="fx-headline-row">
+        <div class="fx-headline" id="fxHeadline">1 CHF = ---- 円</div>
+        <a class="link-btn fx-oanda-link" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" data-i18n-title="oandaLinkTitle" title="OANDAの為替換算ページを開く">
+          <span data-i18n="oandaLinkText">OANDAで見る ↗</span>
+        </a>
+      </div>
       <p class="fx-updated" id="fxUpdated">最終更新: --</p>
 
       <div class="fx-calc">
@@ -71,9 +76,6 @@
             <span class="fx-calc__unit" data-i18n="unitJpy">円</span>
           </div>
         </div>
-        <a class="link-btn" id="fxOandaLink" href="https://www.oanda.com/currency-converter/en/?from=JPY&to=CHF&amount=1" target="_blank" rel="noopener" data-i18n-title="oandaLinkTitle" title="OANDAの為替換算ページを開く">
-          <span data-i18n="oandaLinkText">OANDAで見る ↗</span>
-        </a>
       </div>
 
       <p class="fx-note" data-i18n="fxNote">出典: Frankfurter API (欧州中央銀行 参考レート)。60秒ごとに自動更新します。</p>
