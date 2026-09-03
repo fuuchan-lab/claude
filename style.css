@@ -307,8 +307,15 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 44px;
   padding: 0 0 2px;
+}
+
+@media (max-width: 400px) {
+  .fx-headline-row {
+    gap: 10px;
+  }
 }
 
 .fx-headline {
@@ -316,6 +323,7 @@ body::before {
   font-size: 1.8rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .fx-oanda-link {
