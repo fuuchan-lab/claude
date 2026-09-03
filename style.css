@@ -61,10 +61,10 @@ body::before {
 
 .link-btn.hotel-link {
   background: #003580;
-  font-size: 1.8rem;
+  font-size: 1rem;
   font-weight: 700;
   padding: 10px 16px;
-  line-height: 1.15;
+  line-height: 1.25;
   white-space: normal;
   text-align: center;
   flex: 1;
