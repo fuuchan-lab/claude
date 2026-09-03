@@ -35,6 +35,11 @@ const STRINGS = {
     qrCaption: "このアプリのダウンロードはこちら",
     hotelLinkTitle: "出張・出張時のホテル予約におすすめ",
     hotelLinkText: "🏨 スイスのホテル予約 (Booking.com)",
+    installTitle: "このアプリのダウンロード方法",
+    installIosLabel: "iPhone:",
+    installIosSteps: "Safariで開き、共有ボタン→「ホーム画面に追加」",
+    installAndroidLabel: "Android:",
+    installAndroidSteps: "Chromeで開き、メニュー(⋮)→「アプリをインストール」",
 
     loading: "読み込み中...",
     updatedPrefix: "最終更新: ",
@@ -84,6 +89,11 @@ const STRINGS = {
     qrCaption: "Download this app here",
     hotelLinkTitle: "Recommended for booking hotels for business trips to Switzerland",
     hotelLinkText: "🏨 Book a Hotel in Switzerland (Booking.com)",
+    installTitle: "How to install this app",
+    installIosLabel: "iPhone:",
+    installIosSteps: "Open in Safari, tap Share, then \"Add to Home Screen\"",
+    installAndroidLabel: "Android:",
+    installAndroidSteps: "Open in Chrome, tap ⋮ menu, then \"Install app\"",
 
     loading: "Loading...",
     updatedPrefix: "Updated: ",
